@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const PORT = process.env.PORT || 5000;
+const port = process.env.PORT || 5000;
 
 const app = express();
 app.use(cors());
@@ -117,9 +117,7 @@ app.delete("/api/users/:id", async (req, res) => {
   res.send(result);
 });
 
-if (process.env.NODE_ENV !== "production") {
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
-}
+app.listen(port, () => {
+  console.log(` server is listening on port ${port}`);
+});
 module.exports = app;
