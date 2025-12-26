@@ -40,11 +40,34 @@ app.get("/api/health", (req, res) => {
 
 // GET orders
 app.get("/api/orders", async (req, res) => {
+  const quary = req.query.email;
   const db = await connectDB();
-  const result = await db.collection("orders").find().toArray();
-  res.send(result);
-});
+  // console.log(quary);
 
+  if (quary) {
+    const result = await db
+      .collection("orders")
+      .find({ email: quary })
+      .toArray();
+    // console.log(result);
+
+    res.send(result);
+  } else {
+    const result = await db.collection("orders").find().toArray();
+    res.send(result);
+  }
+  // console.log(quary);
+});
+// GET ORDER BY EMAIL
+// app.get("/api/orders/", async (req, res) => {
+//   const db = await connectDB();
+//   const id = req.params.id;
+//   const email="resma@gmail.com"
+//   const quary={email:email}
+//   const result = await db.collection("orders").find(quary).toArray();
+
+//   res.send(result);
+// });
 // GET users
 app.get("/api/users", async (req, res) => {
   const db = await connectDB();
@@ -70,7 +93,7 @@ app.post("/api/users", async (req, res) => {
 app.put("/api/orders/:id", async (req, res) => {
   const db = await connectDB();
   const id = req.params.id;
-
+  console.log(req.body);
   const result = await db
     .collection("orders")
     .updateOne(
@@ -85,10 +108,10 @@ app.put("/api/orders/:id", async (req, res) => {
 app.put("/api/users/:id", async (req, res) => {
   const db = await connectDB();
   const id = req.params.id;
-
+  console.log(req.body);
   const result = await db
     .collection("users")
-    .updateOne({ _id: new ObjectId(id) }, { $set: { role: req.body.role } });
+    .updateOne({ _id: new ObjectId(id) }, { $set: { role: req.body.status } });
 
   res.send(result);
 });
