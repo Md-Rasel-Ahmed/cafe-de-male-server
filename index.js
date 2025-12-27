@@ -140,9 +140,8 @@ app.delete("/api/users/:id", async (req, res) => {
   res.send(result);
 });
 
-if (process.env.NODE_ENV !== "production") {
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
-}
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
+
 module.exports = app;
