@@ -74,6 +74,17 @@ app.get("/api/users", async (req, res) => {
   const result = await db.collection("users").find().toArray();
   res.send(result);
 });
+// GET users by email
+app.get("/api/users/:email", async (req, res) => {
+  const db = await connectDB();
+  const email = req.params.email;
+  const result = await db.collection("users").findOne({ email: email });
+  if (!result) {
+    return res.status(200).json({}); // ✅ empty JSON
+  }
+
+  res.json(result);
+});
 
 // POST order
 app.post("/api/orders", async (req, res) => {
@@ -109,9 +120,20 @@ app.put("/api/users/:id", async (req, res) => {
   const db = await connectDB();
   const id = req.params.id;
   console.log(req.body);
+
+  let updateDocs;
+  if (req.body.status === "user" || req.body.status === "admin") {
+    updateDocs = {
+      $set: { role: req.body.status },
+    };
+  } else {
+    updateDocs = {
+      $set: { status: req.body.status },
+    };
+  }
   const result = await db
     .collection("users")
-    .updateOne({ _id: new ObjectId(id) }, { $set: { role: req.body.status } });
+    .updateOne({ _id: new ObjectId(id) }, updateDocs);
 
   res.send(result);
 });
