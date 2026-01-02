@@ -74,6 +74,12 @@ app.get("/api/users", async (req, res) => {
   const result = await db.collection("users").find().toArray();
   res.send(result);
 });
+// get reservation
+app.get("/api/reservation", async (req, res) => {
+  const db = await connectDB();
+  const result = await db.collection("reservation").find().toArray();
+  res.send(result);
+});
 // GET users by email
 app.get("/api/users/:email", async (req, res) => {
   const db = await connectDB();
@@ -99,7 +105,12 @@ app.post("/api/users", async (req, res) => {
   const result = await db.collection("users").insertOne(req.body);
   res.send(result);
 });
-
+// POST RESERVATION
+app.post("/api/reservation", async (req, res) => {
+  const db = await connectDB();
+  const result = await db.collection("reservation").insertOne(req.body);
+  res.send(result);
+});
 // UPDATE order
 app.put("/api/orders/:id", async (req, res) => {
   const db = await connectDB();
@@ -107,6 +118,20 @@ app.put("/api/orders/:id", async (req, res) => {
   console.log(req.body);
   const result = await db
     .collection("orders")
+    .updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { status: req.body.status } }
+    );
+
+  res.send(result);
+});
+// update reservation status
+app.put("/api/reservation/:id", async (req, res) => {
+  const db = await connectDB();
+  const id = req.params.id;
+  console.log(req.body);
+  const result = await db
+    .collection("reservation")
     .updateOne(
       { _id: new ObjectId(id) },
       { $set: { status: req.body.status } }
@@ -144,6 +169,17 @@ app.delete("/api/orders/:id", async (req, res) => {
   const id = req.params.id;
 
   const result = await db.collection("orders").deleteOne({
+    _id: new ObjectId(id),
+  });
+
+  res.send(result);
+});
+// DELETE reservation
+app.delete("/api/reservation/:id", async (req, res) => {
+  const db = await connectDB();
+  const id = req.params.id;
+
+  const result = await db.collection("reservation").deleteOne({
     _id: new ObjectId(id),
   });
 
